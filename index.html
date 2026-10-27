@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Hotel Najah Hurrahman - Management System</title>
+<style>
+:root{
+  --bg:#0b1220;--card:#131c31;--card2:#18233d;--line:#26334f;--txt:#e8edf7;--mut:#8b97b3;
+  --blue:#4f8cff;--green:#2fbf71;--yellow:#f0b429;--red:#ef4b4b;--gray:#6b7690;--orange:#ff9f43;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;line-height:1.45}
+header.top{background:linear-gradient(90deg,#10234d,#17306a);padding:14px 20px;border-bottom:1px solid var(--line)}
+header.top h1{margin:0;font-size:18px;text-align:center;letter-spacing:.5px}
+.bar{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;margin-top:8px;font-size:13px;color:var(--mut)}
+.bar b{color:var(--txt)}
+main{max-width:1000px;margin:0 auto;padding:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px;margin-bottom:16px}
+.card h2{margin:0 0 10px;font-size:16px}
+.center{max-width:480px;margin:30px auto}
+.title{text-align:center}
+.mut{color:var(--mut);font-size:13px}
+.btn{display:inline-block;background:var(--blue);color:#fff;border:0;border-radius:8px;padding:10px 16px;font-size:14px;cursor:pointer;font-weight:600}
+.btn:hover{filter:brightness(1.1)}
+.btn.sec{background:var(--card2);border:1px solid var(--line);color:var(--txt)}
+.btn.red{background:var(--red)}.btn.green{background:var(--green)}.btn.yel{background:var(--yellow);color:#222}
+.btn.block{display:block;width:100%;margin-bottom:8px;text-align:left}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+label{display:block;font-size:13px;color:var(--mut);margin:12px 0 4px}
+input[type=text],input[type=email],input[type=number],select,textarea{width:100%;background:#0d1627;border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:10px;font-size:14px}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--blue)}
+.row{display:flex;gap:10px;flex-wrap:wrap}.row>*{flex:1;min-width:140px}
+.tabs{display:flex;gap:6px;margin-bottom:12px}
+.tabs button{flex:1}
+.opt{display:flex;gap:14px;flex-wrap:wrap;margin-top:4px}
+.opt label{display:flex;gap:6px;align-items:center;margin:0;color:var(--txt);cursor:pointer}
+.msg{padding:9px 12px;border-radius:8px;font-size:13px;margin:10px 0}
+.msg.err{background:#3a1519;border:1px solid var(--red);color:#ffb3b3}
+.msg.warn{background:#3a2e10;border:1px solid var(--yellow);color:#ffe29a}
+.msg.ok{background:#0f3524;border:1px solid var(--green);color:#a6f0c7}
+.msg.info{background:#13284d;border:1px solid var(--blue);color:#b8d1ff}
+/* denah */
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:12px;color:var(--mut);margin-bottom:10px}
+.dot{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px}
+.floor{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.floor .lbl{width:62px;font-size:12px;color:var(--mut);flex:none}
+.rooms{display:grid;grid-template-columns:repeat(10,1fr);gap:5px;flex:1}
+.room{border:1px solid transparent;border-radius:6px;padding:5px 2px;font-size:11px;text-align:center;color:#fff;cursor:default;line-height:1.2;font-family:inherit}
+.room small{display:block;opacity:.85;font-size:9px}
+.s-trs{background:#1c7a4a}.s-bbl{background:#a87a0c}.s-blns{background:#b53636}.s-cof{background:#8c2323}
+.s-cln{background:#2a5fc4}.s-cmp{background:#555f78}
+.pick .room{cursor:pointer}
+.pick .room.dis{opacity:.3;cursor:not-allowed}
+.pick .room.sel{outline:3px solid #fff;transform:scale(1.06)}
+.sum{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px}
+.sum div{background:var(--card2);border-radius:8px;padding:8px 10px;font-size:13px}
+.sum b{display:block;font-size:20px}
+.menu{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}
+/* modal */
+.ov{position:fixed;inset:0;background:rgba(3,7,16,.78);display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:20px;z-index:50}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;width:100%;max-width:640px;margin:auto}
+.modal.wide{max-width:820px}
+.modal h3{margin:0 0 6px}
+.step{color:var(--orange);font-size:13px;margin:14px 0 4px;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line)}
+th{color:var(--mut);font-weight:500}
+.struk{border:1px dashed var(--line);border-radius:10px;padding:12px;margin:12px 0;background:#0e1830}
+.struk h4{margin:0 0 8px}
+.struk .r{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:2px 0}
+.struk .r span:first-child{color:var(--mut)}
+.prog{height:12px;background:#0d1627;border-radius:6px;overflow:hidden;margin:10px 0}
+.prog i{display:block;height:100%;width:0;background:var(--blue);transition:width 2s linear}
+.steps{display:flex;gap:8px;flex-wrap:wrap;font-size:13px;margin:8px 0}
+.steps span{padding:4px 10px;border-radius:20px;background:var(--card2);color:var(--mut)}
+.steps span.on{background:var(--blue);color:#fff}.steps span.done{background:#0f3524;color:#a6f0c7}
+.chk{display:flex;align-items:center;gap:8px;font-size:14px;color:var(--txt);margin:10px 0}
+.li{font-size:14px;padding:4px 0}
+.li.ok::before{content:"✔ ";color:var(--green)}
+.li.run::before{content:"⏳ "}
+.sp{display:inline-block;animation:sp 1s linear infinite}@keyframes sp{to{transform:rotate(360deg)}}
+@media(max-width:620px){.rooms{grid-template-columns:repeat(5,1fr)}.floor{flex-direction:column;align-items:stretch}}
+</style>
+</head>
+<body>
+<header class="top">
+  <h1>🌟 HOTEL NAJAH HURRAHMAN MANAGEMENT SYSTEM 🌟</h1>
+  <div class="bar"><span>🕒 <b class="clock"></b></span><span id="userbar"></span></div>
+</header>
+<main id="app"></main>
+<div id="modalRoot"></div>
+
+<script>
+/* ============================================================
+   HOTEL NAJAH HURRAHMAN - versi HTML (port dari Python)
+   Data disimpan di localStorage browser (tidak hilang saat tutup tab).
+   ============================================================ */
+const HARGA = {Single:350000, Twin:450000, Queen:550000};
+const TIPE = ['Single','Twin','Queen'];
+const KODE = {TERSEDIA:'TRS',BOOKING_BELUM_LUNAS:'B-BL',BOOKING_LUNAS:'B-LNS',CHECK_IN_LANGSUNG:'C-OF',CLEANING_PROCESS:'CLN',CLEANING_COMPLETED:'CMP'};
+const CLS = {TERSEDIA:'s-trs',BOOKING_BELUM_LUNAS:'s-bbl',BOOKING_LUNAS:'s-blns',CHECK_IN_LANGSUNG:'s-cof',CLEANING_PROCESS:'s-cln',CLEANING_COMPLETED:'s-cmp'};
+const TERISI = ['BOOKING_BELUM_LUNAS','BOOKING_LUNAS','CHECK_IN_LANGSUNG'];
+const DOMAIN = '@hotel.com';
+const KEY = 'hotel_najah_data_v1';
+const HARI = ['Minggu','Senin','Selasa','Rabu','Kamis','Jumat','Sabtu'];
+const BULAN = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+
+/* ---------- state ---------- */
+let rooms = {};               // {'101': {status, tamu, kasur}}
+let resepsionisDb = {'resepsionis@hotel.com':'Resepsionis Utama'};
+let tamuDb = {};
+let statusSistem = {dimatikan:null, laporan:null};
+let riwayatBatal = [];
+let S = {view:'gate', user:null, role:null};
+let sesi = null, sesiTerakhir = null;
+let exitTimer = null;
+
+(function initRooms(){
+  let u = 0;
+  for(let l=1;l<=5;l++) for(let k=1;k<=10;k++){
+    rooms[`${l}${String(k).padStart(2,'0')}`] = {status:'TERSEDIA', tamu:null, kasur:TIPE[u%3]}; u++;
+  }
+})();
+
+/* ---------- util ---------- */
+const $ = s => document.querySelector(s);
+const esc = t => String(t ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const rupiah = n => 'Rp' + Number(n).toLocaleString('id-ID');
+const pad = n => String(n).padStart(2,'0');
+const allRooms = () => Object.keys(rooms).sort();
+const hargaKamar = no => HARGA[rooms[no].kasur];
+const infoKasur = no => `${rooms[no].kasur} - ${rupiah(hargaKamar(no))}/malam`;
+const kamarAda = no => /^\d{3}$/.test(no) && !!rooms[no];
+const labelKamar = no => `${no} (Lantai ${no[0]})`;
+const emailValid = e => /^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(e);
+const emailHotel = e => e.toLowerCase().endsWith(DOMAIN);
+function gabung(a){ return a.length===2 ? `${a[0]} dan ${a[1]}` : a.join(', '); }
+
+function tz(){
+  const m = -new Date().getTimezoneOffset()/60;
+  return ({7:'WIB',8:'WITA',9:'WIT'})[m] || ('UTC'+(m>=0?'+':'')+m);
+}
+function waktuSekarang(){
+  const n = new Date();
+  return `${pad(n.getDate())}/${pad(n.getMonth()+1)}/${n.getFullYear()} ${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())} ${tz()}`;
+}
+function waktuLengkap(){
+  const n = new Date();
+  return `${HARI[n.getDay()]}, ${n.getDate()} ${BULAN[n.getMonth()]} ${n.getFullYear()} • ${pad(n.getHours())}:${pad(n.getMinutes())}:${pad(n.getSeconds())} ${tz()}`;
+}
+setInterval(()=>{
+  document.querySelectorAll('.clock').forEach(e=>e.textContent = waktuLengkap());
+  document.title = 'Hotel Najah Hurrahman - ' + waktuLengkap();
+},1000);
+
+/* ---------- penyimpanan ---------- */
+function simpan(){
+  try{
+    const kamar = {}; allRooms().forEach(n => kamar[n] = {status:rooms[n].status, tamu:rooms[n].tamu});
+    localStorage.setItem(KEY, JSON.stringify({disimpan:waktuSekarang(), kamar, resepsionis:resepsionisDb, tamu:tamuDb, statusSistem, pembatalan:riwayatBatal}));
+    return true;
+  }catch(e){ return false; }
+}
+function muat(){
+  const raw = localStorage.getItem(KEY);
+  if(!raw) return 'kosong';
+  try{
+    const d = JSON.parse(raw);
+    for(const [no,v] of Object.entries(d.kamar||{})){
+      if(rooms[no] && CLS[v.status]){ rooms[no].status = v.status; rooms[no].tamu = v.tamu || null; }
+    }
+    Object.assign(resepsionisDb, d.resepsionis||{});
+    Object.assign(tamuDb, d.tamu||{});
+    Object.assign(statusSistem, d.statusSistem||{});
+    riwayatBatal = d.pembatalan || [];
+    return 'ok';
+  }catch(e){
+    localStorage.setItem(KEY+'.rusak', raw); localStorage.removeItem(KEY);
+    return 'rusak';
+  }
+}
+function hitung(){
+  const h = {TERSEDIA:0,BOOKING_LUNAS:0,BOOKING_BELUM_LUNAS:0,CLEANING:0,CHECK_IN_LANGSUNG:0};
+  allRooms().forEach(n=>{
+    let s = rooms[n].status; if(s==='CLEANING_PROCESS'||s==='CLEANING_COMPLETED') s='CLEANING'; h[s]++;
+  });
+  return h;
+}
+function unduh(nama, isi){
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([isi],{type:'text/plain;charset=utf-8'}));
+  a.download = nama; document.body.appendChild(a); a.click(); a.remove();
+}
+
+/* ---------- modal & komponen ---------- */
+function modal(html, wide){
+  closeModal();
+  const o = document.createElement('div'); o.className='ov';
+  o.innerHTML = `<div class="modal ${wide?'wide':''}">${html}</div>`;
+  $('#modalRoot').appendChild(o);
+  return o;
+}
+function closeModal(){ $('#modalRoot').innerHTML=''; }
+function msg(kind, t){ return `<div class="msg ${kind}">${t}</div>`; }
+function step(n,t,l){ return `<div class="step">Langkah ${n}/${t} ${'●'.repeat(n)}${'○'.repeat(t-n)} &nbsp; ${l}</div>`; }
+function struk(judul, rows, warna='var(--green)'){
+  rows = rows.concat([['Dicetak', waktuSekarang()]]);
+  return `<div class="struk" style="border-color:${warna}"><h4 style="color:${warna}">${judul}</h4>${
+    rows.map(([a,b])=>`<div class="r"><span>${esc(a)}</span><span>${b}</span></div>`).join('')}</div>`;
+}
+const badgeBayar = lunas => lunas ? '<b style="color:var(--green)">LUNAS</b>' : '<b style="color:var(--yellow)">BELUM LUNAS</b>';
+
+function denahHTML(opts={}){
+  // opts.pilih: 'single'|'multi'; opts.filter: fn(no)=>bool; terpilih set
+  let h = '';
+  for(let l=1;l<=5;l++){
+    h += `<div class="floor"><div class="lbl">Lantai ${l}</div><div class="rooms">`;
+    for(let k=1;k<=10;k++){
+      const no = `${l}${pad(k)}`, r = rooms[no];
+      const ok = !opts.filter || opts.filter(no);
+      const sel = opts.terpilih && opts.terpilih.has(no) ? ' sel':'';
+      const click = opts.pilih && ok ? ` onclick="${opts.aksi}('${no}')"` : '';
+      h += `<button type="button" class="room ${CLS[r.status]}${ok?'':' dis'}${sel}"${click} title="${r.kasur} ${rupiah(HARGA[r.kasur])}">${no}<small>${KODE[r.status]} · ${r.kasur[0]}</small></button>`;
+    }
+    h += `</div></div>`;
+  }
+  return h;
+}
+function legendHTML(){
+  return `<div class="legend">
+  <span><i class="dot" style="background:#1c7a4a"></i>TRS Tersedia</span>
+  <span><i class="dot" style="background:#a87a0c"></i>B-BL Booking Blm Lunas</span>
+  <span><i class="dot" style="background:#b53636"></i>B-LNS Booking Lunas</span>
+  <span><i class="dot" style="background:#8c2323"></i>C-OF Check-In Langsung</span>
+  <span><i class="dot" style="background:#2a5fc4"></i>CLN Cleaning</span>
+  <span><i class="dot" style="background:#555f78"></i>CMP Completed</span></div>
+  <div class="mut">Kasur/malam: S=Single ${rupiah(HARGA.Single)} | T=Twin ${rupiah(HARGA.Twin)} | Q=Queen ${rupiah(HARGA.Queen)}</div>`;
+}
+function ringkasanHTML(){
+  const h = hitung(), tot = allRooms().length;
+  return `<div class="sum">
+   <div style="border-left:4px solid var(--green)">Tersedia<b>${h.TERSEDIA}</b></div>
+   <div style="border-left:4px solid var(--yellow)">Booking Belum Lunas<b>${h.BOOKING_BELUM_LUNAS}</b></div>
+   <div style="border-left:4px solid var(--red)">Booking Lunas<b>${h.BOOKING_LUNAS}</b></div>
+   <div style="border-left:4px solid var(--red)">Check-In Offline<b>${h.CHECK_IN_LANGSUNG}</b></div>
+   <div style="border-left:4px solid var(--blue)">Cleaning<b>${h.CLEANING}</b></div>
+  </div><div class="mut" style="margin-top:6px">Total ${tot} kamar</div>`;
+}
+function tipeListHTML(){
+  return TIPE.map(t=>{
+    const l = allRooms().filter(n=>rooms[n].kasur===t);
+    return `<div class="mut"><b style="color:var(--orange)">${t}</b> ${rupiah(HARGA[t])}/malam (${l.length} kamar): ${l.join(' ')}</div>`;
+  }).join('');
+}
+function tabelTamu(list){
+  return `<table><tr><th>Kamar</th><th>Kasur</th><th>Nama Tamu</th><th>Total</th><th>Pembayaran</th></tr>${
+   list.map(n=>{const k=rooms[n],t=k.tamu||{};
+     return `<tr><td>${n}</td><td>${k.kasur}</td><td>${esc(t.nama||'-')}</td><td>${t.total?rupiah(t.total):'-'}</td><td>${badgeBayar(k.status!=='BOOKING_BELUM_LUNAS')}</td></tr>`}).join('')}</table>`;
+}
+function refreshDenah(){
+  const d = $('#denah'); if(d) d.innerHTML = denahHTML();
+  const r = $('#ringkas'); if(r) r.innerHTML = ringkasanHTML();
+}
+
+/* ---------- render utama ---------- */
+function render(){
+  $('#userbar').innerHTML = S.user ? `👤 <b>${esc(S.user)}</b> (<span style="color:var(--blue)">${S.role}</span>)` : '';
+  ({gate:vGate, standby:vStandby, boot:vBoot, auth:vAuth, dash:vDash, exit:vExit, closed:vClosed})[S.view]();
+  document.querySelectorAll('.clock').forEach(e=>e.textContent = waktuLengkap());
+}
+function go(v){ S.view=v; render(); window.scrollTo(0,0); }
+
+/* ---------- gerbang ---------- */
+function vGate(){
+  $('#app').innerHTML = `<div class="card center title">
+    <h2>SELAMAT DATANG</h2>
+    <p><b>Hotel Najah Hurrahman</b></p>
+    <p class="mut">Sistem manajemen hotel: booking, check-in, check-out, dan cleaning kamar.</p>
+    <button class="btn" onclick="go('standby')">[1] Masuk Program</button></div>`;
+}
+function vStandby(){
+  const sd = statusSistem.dimatikan;
+  $('#app').innerHTML = `<div class="card center">
+    <h2 style="color:var(--red)">MODE STANDBY</h2>
+    <div class="li">Status sistem: <b style="color:var(--red)">MATI (Hotel Tutup)</b></div>
+    <div class="li">Terakhir dimatikan: ${sd?esc(sd):'<span class="mut">(belum pernah)</span>'}</div>
+    ${sd?`<div class="li">Laporan terakhir: ${esc(statusSistem.laporan||'-')}</div>`:''}
+    <div style="margin-top:14px">
+      <button class="btn block" onclick="nyalakanSistem()">[1] Nyalakan Sistem (Buka Hotel)</button>
+      <button class="btn sec block" onclick="mulaiKeluar()">[2] Keluar Program</button>
+    </div></div>`;
+}
+
+/* ---------- nyalakan sistem ---------- */
+async function nyalakanSistem(){
+  S.view='boot'; render();
+  const hasil = muat();
+  const log = [], A = $('#app');
+  const draw = (extra='') => A.innerHTML = `<div class="card center"><h2>NYALAKAN SISTEM / BUKA HOTEL</h2>${log.map(l=>`<div class="li ok">${l}</div>`).join('')}${extra}</div>`;
+  const stepsList = [
+    step(1,3,'Pemeriksaan sistem')+'', 
+  ];
+  const seq = [
+    'Memeriksa komponen sistem',
+    `Memuat data ${allRooms().length} kamar di 5 lantai`,
+    'Menyiapkan denah dan status kamar',
+    'Mengaktifkan layanan booking online',
+    'Mengaktifkan layanan check-in langsung',
+    'Mengaktifkan layanan check-out dan cleaning',
+    'Mengaktifkan layanan login dan akun'
+  ];
+  for(const s of seq){ draw(`<div class="li run"><span class="sp">⠋</span> ${s}...</div>`); await sleep(450); log.push(s+'... selesai'); }
+  if(hasil==='rusak') log.push('⚠️ File data lama rusak dan diamankan. Dimulai dari data baru.');
+  const h = hitung(), tot = allRooms().length;
+  draw(`<div class="msg ok"><b>HOTEL DIBUKA</b><br>Status sistem: MENYALA (Hotel Buka)<br>Waktu buka: ${waktuSekarang()}<br>
+   Kamar tersedia: ${h.TERSEDIA} dari ${tot}<br>Data hotel: ${hasil==='ok'?'dipulihkan dari penyimpanan':'data baru'}
+   ${statusSistem.dimatikan?`<br>Ditutup terakhir: ${esc(statusSistem.dimatikan)}`:''}</div>
+   <div class="mut">Menuju halaman login...</div>`);
+  await sleep(1800);
+  go('auth');
+}
+
+/* ---------- keluar program ---------- */
+function mulaiKeluar(){ S.view='exit'; render(); }
+function vExit(){
+  let n = 5;
+  $('#app').innerHTML = `<div class="card center"><h2 style="color:var(--yellow)">KELUAR PROGRAM</h2>
+   <p>Anda memilih KELUAR dari program. Salah pilih? Klik tombol batal sebelum waktu habis.</p>
+   <div class="msg warn" id="cd">Program ditutup dalam ${n} detik...</div>
+   <button class="btn sec" id="btnBatal">Batal, kembali ke program</button></div>`;
+  clearInterval(exitTimer);
+  $('#btnBatal').onclick = ()=>{ clearInterval(exitTimer); go('standby'); };
+  exitTimer = setInterval(()=>{
+    n--; const c = $('#cd');
+    if(n<=0){ clearInterval(exitTimer); simpan(); go('closed'); }
+    else if(c) c.textContent = `Program ditutup dalam ${n} detik...`;
+  },1000);
+}
+function vClosed(){
+  $('#app').innerHTML = `<div class="card center title"><h2 style="color:var(--green)">SAMPAI JUMPA</h2>
+   <p>Waktu tutup: ${waktuSekarang()}<br>Data hotel tersimpan dan tidak direset.<br>Terima kasih telah menggunakan sistem Hotel Najah Hurrahman.</p>
+   <button class="btn" onclick="go('gate')">Buka Program Kembali</button></div>`;
+}
+
+/* ---------- login / daftar ---------- */
+let authTab = 'login', authErr = '';
+function vAuth(){
+  const login = authTab==='login';
+  $('#app').innerHTML = `<div class="card center">
+   <h2 class="title">SELAMAT DATANG</h2>
+   <div class="tabs"><button class="btn ${login?'':'sec'}" onclick="setTab('login')">Masuk (Login)</button>
+   <button class="btn ${login?'sec':''}" onclick="setTab('daftar')">Daftar Akun Baru</button></div>
+   ${authErr?msg('err',authErr):''}
+   <label>${login?'Login sebagai':'Daftar sebagai'}</label>
+   <div class="opt"><label><input type="radio" name="peran" value="RESEPSIONIS" checked> Resepsionis Hotel</label>
+   <label><input type="radio" name="peran" value="TAMU"> Tamu Hotel</label></div>
+   <label>Email ${login?'terdaftar':'baru'}</label>
+   <input type="email" id="authEmail" placeholder="nama@email.com / nama${DOMAIN}" onkeydown="if(event.key==='Enter')submitAuth()">
+   <div class="mut" style="margin-top:6px">Resepsionis wajib memakai email hotel ${DOMAIN}. Akun demo: resepsionis@hotel.com</div>
+   <div style="margin-top:14px"><button class="btn" onclick="submitAuth()">${login?'Masuk':'Daftar & Masuk'}</button>
+   <button class="btn red" style="float:right" onclick="matikanDariLogin()">🔌 Matikan Sistem</button></div></div>`;
+}
+function setTab(t){ authTab=t; authErr=''; render(); }
+function submitAuth(){
+  const peran = document.querySelector('input[name=peran]:checked').value;
+  const email = $('#authEmail').value.trim();
+  const resp = peran==='RESEPSIONIS', nama = resp?'Resepsionis':'Tamu';
+  const db = resp ? resepsionisDb : tamuDb;
+  const fail = t => { authErr = t; render(); };
+  if(authTab==='login'){
+    if(!email) return fail('⚠️ Email tidak boleh kosong!');
+    if(resp && !emailHotel(email)) return fail(`❌ Resepsionis wajib memakai email hotel (${DOMAIN}).`);
+    if(!resp && emailHotel(email)) return fail(`❌ Email hotel (${DOMAIN}) khusus Resepsionis. Pilih Login Resepsionis.`);
+    if(!(email in db)) return fail(`❌ Email ${nama} belum terdaftar. Silakan daftar dahulu.`);
+  }else{
+    if(!emailValid(email)) return fail('⚠️ Format email tidak valid.');
+    if(resp && !emailHotel(email)) return fail(`❌ Resepsionis wajib memakai email hotel (${DOMAIN}).`);
+    if(!resp && emailHotel(email)) return fail(`❌ Email hotel (${DOMAIN}) khusus Resepsionis. Gunakan email pribadi.`);
+    if(email in db) return fail(`⚠️ Email ${nama} sudah terdaftar!`);
+    db[email] = nama+' Hotel'; simpan();
+  }
+  authErr=''; S.user=email; S.role=peran;
+  sesi = {mulai:Date.now(),booking:0,checkin:0,checkout:0,batal:0}; sesiTerakhir = sesi;
+  modal(`<h3 style="color:var(--green)">LOGIN BERHASIL</h3><p>Selamat datang, <b>${esc(email)}</b><br>Masuk sebagai: ${nama}<br>Waktu masuk: ${waktuSekarang()}</p>
+   <button class="btn" onclick="closeModal();go('dash')">Masuk ke Dashboard</button>`);
+}
+
+/* ---------- dashboard ---------- */
+function vDash(){
+  const resp = S.role==='RESEPSIONIS';
+  $('#app').innerHTML = `
+   <div class="card"><h2>DENAH & STATUS KAMAR</h2>${legendHTML()}<div style="margin-top:12px" id="denah">${denahHTML()}</div></div>
+   <div class="card"><h2>📊 RINGKASAN KAMAR</h2><div id="ringkas">${ringkasanHTML()}</div></div>
+   <div class="card"><h2>${resp?'MENU RESEPSIONIS':'MENU TAMU'}</h2><div class="menu">${
+    resp ? `
+     <button class="btn" onclick="menuBooking()">🏨 Booking Online (Atas Nama Tamu)</button>
+     <button class="btn" onclick="menuCheckin()">🔑 Check-In Langsung / On The Spot</button>
+     <button class="btn" onclick="menuCheckout()">🧳 Check-Out & Cleaning (Multi-Kamar)</button>
+     <button class="btn yel" onclick="menuBatal()">❌ Pembatalan Booking / Check-In</button>
+     <button class="btn sec" onclick="logout()">🚪 Logout / Ganti Akun</button>
+     <button class="btn red" onclick="matikanSistem(false)">🔌 Matikan Sistem / Tutup Hotel</button>` : `
+     <button class="btn" onclick="menuBooking()">🏨 Booking Kamar Hotel (Online)</button>
+     <button class="btn sec" onclick="refreshDenah()">🔄 Refresh Denah</button>
+     <button class="btn yel" onclick="menuBatal()">❌ Batalkan Booking Saya</button>
+     <button class="btn sec" onclick="logout()">🚪 Logout / Ganti Akun</button>`}
+   </div></div>`;
+}
+
+/* ---------- pemilih kamar ---------- */
+let pick = {set:new Set(), multi:false, filter:null, hook:null};
+function pickInit(multi, filter, hook){ pick = {set:new Set(), multi, filter, hook}; }
+function pickHTML(){
+  return `<div class="pick" id="pickBox">${denahHTML({pilih:true, aksi:'pickToggle', terpilih:pick.set, filter:pick.filter})}</div>`;
+}
+function pickToggle(no){
+  if(pick.multi){ pick.set.has(no) ? pick.set.delete(no) : pick.set.add(no); }
+  else pick.set = new Set([no]);
+  $('#pickBox').innerHTML = denahHTML({pilih:true, aksi:'pickToggle', terpilih:pick.set, filter:pick.filter});
+  if(pick.hook) pick.hook();
+}
+
+/* ---------- booking online ---------- */
+let bk = {};
+function menuBooking(){
+  bk = {};
+  pickInit(false, no => rooms[no].status==='TERSEDIA', ()=>{
+    const no=[...pick.set][0], e=$('#bkKamar'); if(e) e.innerHTML = no ? `<b>${labelKamar(no)}</b> - ${infoKasur(no)}` : '-';
+  });
+  formBooking();
+}
+function formBooking(err=''){
+  const tamu = S.role==='TAMU';
+  modal(`<h3>FORMULIR BOOKING ONLINE KAMAR</h3>${err?msg('err',err):''}
+   ${step(1,6,'Data Tamu')}
+   <label>Nama Lengkap Tamu</label><input type="text" id="bkNama" value="${esc(bk.nama||'')}">
+   <label>Email Tamu ${tamu?'(otomatis)':''}</label><input type="email" id="bkEmail" value="${esc(tamu?S.user:(bk.email||''))}" ${tamu?'readonly':''}>
+   ${step(2,6,'Lama Menginap')}
+   <label>Hari (1-30)</label><input type="number" id="bkHari" min="1" max="30" value="${bk.hari||1}">
+   ${step(3,6,'Pilih Kamar (klik kamar hijau)')}
+   ${tipeListHTML()}<div style="margin-top:8px">${pickHTML()}</div>
+   <div style="margin-top:8px">Kamar dipilih: <span id="bkKamar">${pick.set.size?`<b>${labelKamar([...pick.set][0])}</b>`:'-'}</span></div>
+   ${step(4,6,'Jam Check-In')}
+   <div class="opt"><label><input type="radio" name="bkJam" value="14.00" ${bk.jam!=='16.00'?'checked':''}> 14.00 (2 Siang)</label>
+   <label><input type="radio" name="bkJam" value="16.00" ${bk.jam==='16.00'?'checked':''}> 16.00 (4 Sore)</label></div>
+   ${step(5,6,'Metode Pembayaran')}
+   <div class="opt"><label><input type="radio" name="bkBayar" value="Transfer Bank" ${bk.bayar!=='Virtual Account'?'checked':''}> Transfer Bank</label>
+   <label><input type="radio" name="bkBayar" value="Virtual Account" ${bk.bayar==='Virtual Account'?'checked':''}> Virtual Account</label></div>
+   <label class="chk"><input type="checkbox" id="bkLunas" ${bk.lunas?'checked':''}> Lunasi pembayaran sekarang</label>
+   <div style="margin-top:14px"><button class="btn" onclick="bkLanjut()">Lanjut ke Ringkasan</button>
+   <button class="btn sec" onclick="closeModal()">Batal</button></div>`, true);
+}
+function bkLanjut(){
+  bk = {
+    nama:$('#bkNama').value.trim(), email:$('#bkEmail').value.trim(), hari:parseInt($('#bkHari').value,10),
+    kamar:[...pick.set][0], jam:document.querySelector('input[name=bkJam]:checked').value,
+    bayar:document.querySelector('input[name=bkBayar]:checked').value, lunas:$('#bkLunas').checked
+  };
+  if(!bk.nama) return formBooking('⚠️ Nama wajib diisi!');
+  if(!emailValid(bk.email)) return formBooking('⚠️ Format email tidak valid!');
+  if(!(bk.hari>=1 && bk.hari<=30)) return formBooking('⚠️ Lama menginap harus 1 sampai 30 hari.');
+  if(!bk.kamar) return formBooking('❌ Pilih kamar yang tersedia terlebih dahulu.');
+  const total = hargaKamar(bk.kamar)*bk.hari;
+  modal(`<h3>RINGKASAN BOOKING</h3>${step(6,6,'Konfirmasi Booking')}
+   ${struk('RINGKASAN', [
+    ['Nama',esc(bk.nama)],['Email',esc(bk.email)],['Kamar',labelKamar(bk.kamar)],['Tipe Kasur',rooms[bk.kamar].kasur],
+    ['Harga',rupiah(hargaKamar(bk.kamar))+' / malam'],['Menginap',bk.hari+' hari'],['Total Biaya',`<b>${rupiah(total)}</b>`],
+    ['Check-In / Out',`${bk.jam} | 12.00`],['Pembayaran',bk.bayar],['Status Bayar',badgeBayar(bk.lunas)]
+   ],'var(--yellow)').replace(/<div class="r"><span>Dicetak.*?<\/div>/,'')}
+   <button class="btn green" onclick="bkSimpan()">💾 Simpan Booking</button>
+   <button class="btn sec" onclick="formBooking()">Ubah Data</button>
+   <button class="btn sec" onclick="closeModal()">Batal</button>`, true);
+}
+function bkSimpan(){
+  const no = bk.kamar, k = rooms[no];
+  if(k.status!=='TERSEDIA'){ return formBooking(`❌ Kamar ${no} sudah tidak tersedia. Pilih kamar lain.`); }
+  const order = S.role==='RESEPSIONIS' ? `ORD-${10000+Math.floor(Math.random()*90000)}` : '-';
+  const total = hargaKamar(no)*bk.hari;
+  k.status = bk.lunas ? 'BOOKING_LUNAS' : 'BOOKING_BELUM_LUNAS';
+  k.tamu = {nama:bk.nama,email:bk.email,hari:bk.hari,check_in:bk.jam,check_out:'12.00 (12 Siang)',order_id:order,kasur:k.kasur,harga_malam:hargaKamar(no),total};
+  sesi.booking++; simpan(); refreshDenah();
+  const rows = [['Kamar',no],['Tipe Kasur',infoKasur(no)],['Nama',esc(bk.nama)],['Menginap',`${bk.hari} hari (${bk.jam} - 12.00)`],
+    ['Total Biaya',rupiah(total)],['Pembayaran',`${bk.bayar} - ${bk.lunas?'LUNAS':'BELUM LUNAS'}`]];
+  if(order!=='-') rows.unshift(['No. Order',order]);
+  const tamu = S.role==='TAMU';
+  modal(`<h3 style="color:var(--green)">🎉 Berhasil Booking Kamar ${no} atas nama ${esc(bk.nama)}!</h3>
+   ${struk('BUKTI BOOKING',rows,bk.lunas?'var(--green)':'var(--yellow)')}
+   ${tamu?`<button class="btn" onclick="etiket()">🎫 Download E-Tiket</button> <button class="btn sec" onclick="closeModal()">Selesai</button>`
+         :`<button class="btn" onclick="menuBooking()">🏨 Booking kamar lain</button> <button class="btn sec" onclick="closeModal()">Selesai</button>`}`);
+}
+function etiket(){
+  const no=bk.kamar, t=rooms[no].tamu;
+  unduh(`etiket_${no}.txt`, ['E-TIKET - HOTEL NAJAH HURRAHMAN','='.repeat(36),`Nama      : ${t.nama}`,`Email     : ${t.email}`,
+    `Kamar     : ${no} (${t.kasur})`,`Menginap  : ${t.hari} hari`,`Check-In  : ${t.check_in}`,`Check-Out : ${t.check_out}`,
+    `Total     : ${rupiah(t.total)}`,`Dicetak   : ${waktuSekarang()}`].join('\n')+'\n');
+}
+
+/* ---------- check-in langsung ---------- */
+let ci = {};
+function menuCheckin(){
+  ci = {};
+  pickInit(false, no => rooms[no].status==='TERSEDIA', ()=>{
+    const no=[...pick.set][0], e=$('#ciKamar'); if(e) e.innerHTML = no ? `<b>${labelKamar(no)}</b> - ${infoKasur(no)}` : '-';
+  });
+  formCheckin();
+}
+function formCheckin(err=''){
+  modal(`<h3>CHECK-IN LANGSUNG (WALK-IN / OTS)</h3>${err?msg('err',err):''}
+   ${step(1,4,'Data Tamu (opsional)')}
+   <div class="row"><div><label>Nama Tamu (opsional)</label><input type="text" id="ciNama" value="${esc(ci.nama||'')}"></div>
+   <div><label>Email Tamu (opsional)</label><input type="email" id="ciEmail" value="${esc(ci.email||'')}"></div></div>
+   ${step(2,4,'Pilih Kamar')}${tipeListHTML()}<div style="margin-top:8px">${pickHTML()}</div>
+   <div style="margin-top:8px">Kamar dipilih: <span id="ciKamar">${pick.set.size?`<b>${labelKamar([...pick.set][0])}</b>`:'-'}</span></div>
+   ${step(3,4,'Lama Menginap')}<label>Hari (1-30)</label><input type="number" id="ciHari" min="1" max="30" value="${ci.hari||1}">
+   ${step(4,4,'Metode Pembayaran')}
+   <div class="opt"><label><input type="radio" name="ciBayar" value="Cash" checked> Cash Tunai</label>
+   <label><input type="radio" name="ciBayar" value="QRIS"> QRIS</label></div>
+   <div style="margin-top:14px"><button class="btn green" onclick="ciProses()">Proses Check-In</button>
+   <button class="btn sec" onclick="closeModal()">Batal</button></div>`, true);
+}
+function ciProses(){
+  ci = {nama:$('#ciNama').value.trim(), email:$('#ciEmail').value.trim(), hari:parseInt($('#ciHari').value,10), kamar:[...pick.set][0],
+        bayar:document.querySelector('input[name=ciBayar]:checked').value};
+  if(ci.email && !emailValid(ci.email)) return formCheckin('⚠️ Format email tidak valid (atau kosongkan).');
+  if(!ci.kamar) return formCheckin('❌ Pilih kamar yang tersedia terlebih dahulu.');
+  if(!(ci.hari>=1 && ci.hari<=30)) return formCheckin('⚠️ Lama menginap harus 1 sampai 30 hari.');
+  const no=ci.kamar, k=rooms[no];
+  if(k.status!=='TERSEDIA') return formCheckin(`❌ Kamar ${no} sudah tidak tersedia.`);
+  const order = `OTS-${10000+Math.floor(Math.random()*90000)}`, total = hargaKamar(no)*ci.hari, nm = ci.nama || 'Tamu Walk-In';
+  k.status='CHECK_IN_LANGSUNG';
+  k.tamu={nama:nm,email:ci.email||'-',hari:ci.hari,check_in:'Langsung (OTS)',check_out:'12.00 (12 Siang)',order_id:order,kasur:k.kasur,harga_malam:hargaKamar(no),total};
+  sesi.checkin++; simpan(); refreshDenah();
+  modal(`<h3 style="color:var(--green)">✔ Check-In Kamar ${no} berhasil! Pembayaran ${ci.bayar} LUNAS.</h3>
+   ${struk('BUKTI CHECK-IN',[['No. Order',order],['Kamar',labelKamar(no)],['Tipe Kasur',infoKasur(no)],['Nama',esc(nm)],
+     ['Menginap',`${ci.hari} hari (Check-Out 12.00)`],['Total Biaya',rupiah(total)],['Pembayaran',`${ci.bayar} - LUNAS`]])}
+   <button class="btn" onclick="menuCheckin()">🔑 Check-In lain</button> <button class="btn sec" onclick="closeModal()">Selesai</button>`);
+}
+
+/* ---------- check-out & cleaning ---------- */
+function menuCheckout(err=''){
+  pickInit(true, no => TERISI.includes(rooms[no].status), ()=>{
+    const e=$('#coList'); if(e) e.textContent = pick.set.size ? gabung([...pick.set].sort()) : '-';
+  });
+  modal(`<h3>CHECK-OUT & CLEANING OTOMATIS (MULTI-KAMAR)</h3>${err?msg('err',err):''}
+   ${step(1,4,'Pilih Kamar yang Check-Out')}
+   <div class="mut">Klik kamar terisi (merah/kuning) untuk memilih, atau ketik nomor dipisah koma/spasi.</div>
+   <div style="margin-top:8px">${pickHTML()}</div>
+   <label>Atau ketik nomor kamar</label><input type="text" id="coRaw" placeholder="101, 102  atau  101 102">
+   <div style="margin-top:8px">Terpilih: <b id="coList">-</b></div>
+   <div style="margin-top:14px"><button class="btn" onclick="coLanjut()">Lanjut</button> <button class="btn sec" onclick="closeModal()">Batal</button></div>`, true);
+}
+function coLanjut(){
+  const set = new Set(pick.set), warn = [];
+  const raw = $('#coRaw').value.replace(/,/g,' ').split(/\s+/).filter(Boolean);
+  raw.forEach(n=>{
+    if(!kamarAda(n)) warn.push(`'${esc(n)}' bukan nomor kamar yang valid.`);
+    else if(!TERISI.includes(rooms[n].status)) warn.push(`Kamar ${n} tidak sedang terisi (status: ${KODE[rooms[n].status]}), dilewati.`);
+    else set.add(n);
+  });
+  const daftar = [...set].sort();
+  if(!daftar.length) return menuCheckout('❌ Tidak ada kamar valid yang bisa di-check-out. '+warn.join(' '));
+  const bl = daftar.filter(n=>rooms[n].status==='BOOKING_BELUM_LUNAS');
+  modal(`<h3>KONFIRMASI CHECK-OUT</h3>${step(2,4,'Konfirmasi Check-Out')}
+   ${warn.map(w=>msg('info',w)).join('')}
+   <b>Kamar yang akan di-check-out (${daftar.length})</b>${tabelTamu(daftar)}
+   ${bl.length?msg('warn',`⚠️ Kamar ${gabung(bl)} belum lunas! Pastikan pembayaran sudah diselesaikan.`):''}
+   <div style="margin-top:14px"><button class="btn green" onclick='coProses(${JSON.stringify(daftar)})'>🧳 Lanjutkan Check-Out & Cleaning</button>
+   <button class="btn sec" onclick="closeModal()">Batal</button></div>`, true);
+}
+async function prosesCleaning(daftar, judul){
+  const tahap = [
+    ['CLEANING_PROCESS','🧹 Kamar sedang dibersihkan','CLEANING PROCESS'],
+    ['CLEANING_COMPLETED','✨ Pembersihan selesai','COMPLETED'],
+    ['TERSEDIA','✔ Kamar siap dipakai kembali','TERSEDIA']];
+  for(let i=0;i<tahap.length;i++){
+    const [st,pesan,label] = tahap[i];
+    daftar.forEach(n=>{ rooms[n].status=st; if(st==='TERSEDIA') rooms[n].tamu=null; });
+    simpan(); refreshDenah();
+    const stp = ['Cleaning','Completed','Tersedia'].map((n,j)=>{
+      const c = st==='TERSEDIA' ? 'done' : (j<i?'done':(j===i?'on':''));
+      return `<span class="${c}">${c==='done'?'✔ ':''}${n}</span>`; }).join('');
+    modal(`<h3>${judul}</h3><div>Kamar: <b>${gabung(daftar)}</b></div><div>Tahap: <b>${label}</b></div>
+      <div class="steps">${stp}</div>${st==='TERSEDIA'?`<div class="msg ok">${pesan}</div>`:`<div>${pesan}</div><div class="prog"><i id="pb"></i></div>`}`);
+    if(st!=='TERSEDIA'){ await sleep(50); const p=$('#pb'); if(p) p.style.width='100%'; await sleep(2000); }
+    else await sleep(700);
+  }
+}
+async function coProses(daftar){
+  const rekap = daftar.map(n=>{const k=rooms[n],t=k.tamu||{};
+    return [n, t.nama||'-', t.total?rupiah(t.total):'-', k.status!=='BOOKING_BELUM_LUNAS'];});
+  await prosesCleaning(daftar,'PROSES CHECK-OUT & CLEANING');
+  sesi.checkout += daftar.length;
+  modal(`<h3 style="color:var(--green)">✔ Check-Out selesai. Kamar ${gabung(daftar)} tersedia kembali.</h3>${step(4,4,'Selesai')}
+   <div class="struk" style="border-color:var(--green)"><h4 style="color:var(--green)">BUKTI CHECK-OUT</h4>
+   <table><tr><th>Kamar</th><th>Nama Tamu</th><th>Total</th><th>Pembayaran</th></tr>${
+    rekap.map(r=>`<tr><td>${r[0]}</td><td>${esc(r[1])}</td><td>${r[2]}</td><td>${badgeBayar(r[3])}</td></tr>`).join('')}</table>
+   <div class="mut" style="margin-top:6px">Waktu check-out: ${waktuSekarang()}</div></div>
+   <button class="btn" onclick="menuCheckout()">🧳 Check-Out kamar lain</button> <button class="btn sec" onclick="closeModal()">Selesai</button>`, true);
+}
+
+/* ---------- pembatalan ---------- */
+function kamarMilik(email){
+  return allRooms().filter(n=>TERISI.includes(rooms[n].status) && String((rooms[n].tamu||{}).email||'').toLowerCase()===email.toLowerCase());
+}
+function menuBatal(err=''){
+  const tamu = S.role==='TAMU';
+  const milik = tamu ? kamarMilik(S.user) : null;
+  if(tamu && !milik.length){
+    modal(`<h3>PEMBATALAN BOOKING</h3>${msg('info',`ℹ Tidak ada booking aktif atas email ${esc(S.user)}.`)}<button class="btn sec" onclick="closeModal()">Tutup</button>`);
+    return;
+  }
+  pickInit(false, no => tamu ? milik.includes(no) : TERISI.includes(rooms[no].status), ()=>{
+    const e=$('#btKamar'); if(e) e.textContent = pick.set.size ? [...pick.set][0] : '-';
+  });
+  modal(`<h3>PEMBATALAN BOOKING ${tamu?'':'/ CHECK-IN'}</h3>${err?msg('err',err):''}
+   ${tamu?`<b>Booking aktif Anda (${milik.length})</b>${tabelTamu(milik)}`:''}
+   ${step(1,3,'Pilih Kamar yang Dibatalkan')}<div style="margin-top:8px">${pickHTML()}</div>
+   <label>Atau ketik nomor kamar</label><input type="text" id="btRaw" placeholder="Contoh: 101">
+   <div style="margin-top:8px">Terpilih: <b id="btKamar">-</b></div>
+   <div style="margin-top:14px"><button class="btn" onclick="btLanjut()">Lanjut</button> <button class="btn sec" onclick="closeModal()">Kembali</button></div>`, true);
+}
+function btLanjut(){
+  const typed = $('#btRaw').value.trim();
+  const nomor = typed || [...pick.set][0];
+  if(!nomor || !kamarAda(nomor)) return menuBatal('❌ Nomor kamar tidak valid (101 - 510).');
+  const k = rooms[nomor];
+  if(!TERISI.includes(k.status)) return menuBatal(`❌ Kamar ${nomor} tidak memiliki booking / check-in aktif.`);
+  if(S.role==='TAMU' && !kamarMilik(S.user).includes(nomor)) return menuBatal(`❌ Kamar ${nomor} bukan booking atas akun Anda, tidak dapat dibatalkan.`);
+  const t = k.tamu||{}, lunas = k.status!=='BOOKING_BELUM_LUNAS', jenis = k.status==='CHECK_IN_LANGSUNG'?'Check-In Langsung':'Booking';
+  modal(`<h3>KONFIRMASI PEMBATALAN</h3>${step(2,3,'Konfirmasi Pembatalan')}
+   ${struk('DATA YANG AKAN DIBATALKAN',[['Jenis',jenis],['Kamar',labelKamar(nomor)],['Tipe Kasur',k.kasur],['Nama',esc(t.nama||'-')],
+     ['No. Order',esc(t.order_id||'-')],['Menginap',`${t.hari||'-'} hari`],['Pembayaran',badgeBayar(lunas)],['Total Biaya',t.total?rupiah(t.total):'-']],'var(--yellow)')}
+   ${lunas?msg('warn','⚠️ Pembayaran sudah LUNAS: dana perlu dikembalikan kepada tamu sesuai kebijakan hotel.'):'<div class="mut">Booking belum lunas, tidak ada dana yang perlu dikembalikan.</div>'}
+   ${k.status==='CHECK_IN_LANGSUNG'?'<div class="mut">Kamar akan diproses cleaning terlebih dahulu sebelum tersedia lagi.</div>':''}
+   <label>Alasan pembatalan (opsional)</label><input type="text" id="btAlasan">
+   <div style="margin-top:14px"><button class="btn red" onclick="btProses('${nomor}')">❌ Ya, Batalkan (tidak dapat diurungkan)</button>
+   <button class="btn sec" onclick="closeModal()">Tidak</button></div>`);
+}
+async function btProses(nomor){
+  const alasan = $('#btAlasan').value.trim(), k = rooms[nomor], t = k.tamu||{};
+  const lunas = k.status!=='BOOKING_BELUM_LUNAS', jenis = k.status==='CHECK_IN_LANGSUNG'?'Check-In Langsung':'Booking';
+  riwayatBatal.push({waktu:waktuSekarang(),kamar:nomor,jenis,nama:t.nama||'-',email:t.email||'-',order_id:t.order_id||'-',
+    status_awal:k.status,total:t.total||null,dana_kembali:lunas,dibatalkan_oleh:`${S.user} (${S.role})`,alasan:alasan||'-'});
+  sesi.batal++;
+  if(k.status==='CHECK_IN_LANGSUNG') await prosesCleaning([nomor],'PROSES CLEANING (PEMBATALAN)');
+  else { k.status='TERSEDIA'; k.tamu=null; simpan(); refreshDenah(); }
+  const lagi = S.role==='RESEPSIONIS' || kamarMilik(S.user).length;
+  modal(`<h3 style="color:var(--green)">✔ ${jenis} kamar ${nomor} atas nama ${esc(t.nama||'-')} berhasil dibatalkan. Kamar tersedia kembali.</h3>
+   ${struk('BUKTI PEMBATALAN',[['No. Order',esc(t.order_id||'-')],['Kamar',labelKamar(nomor)],['Nama',esc(t.nama||'-')],['Jenis',jenis],
+     ['Alasan',esc(alasan||'-')],['Dana',lunas?'Dikembalikan sesuai kebijakan hotel':'Tidak ada (belum lunas)']],'var(--red)')}
+   ${lagi?'<button class="btn" onclick="menuBatal()">Batalkan reservasi lain</button> ':''}<button class="btn sec" onclick="closeModal()">Selesai</button>`);
+}
+
+/* ---------- logout ---------- */
+function logout(){
+  modal(`<h3>🚪 Logout</h3><p>Yakin ingin logout?</p>
+   <button class="btn red" onclick="doLogout()">Ya, Logout</button> <button class="btn sec" onclick="closeModal()">Tidak</button>`);
+}
+function doLogout(){
+  const d = Math.floor((Date.now()-sesi.mulai)/1000), m = pad(Math.floor(d/60)), s = pad(d%60);
+  const akun=S.user, peran=S.role, ss={...sesi};
+  S.user=null; S.role=null;
+  go('auth');
+  modal(`<h3>RINGKASAN SESI ANDA</h3>
+   ${struk('LOGOUT',[['Akun',esc(akun)],['Peran',peran],['Lama sesi',`${m}:${s}`],['Booking dibuat',ss.booking],['Check-In langsung',ss.checkin],
+     ['Kamar di-Check-Out',ss.checkout],['Pembatalan',ss.batal]],'var(--yellow)')}
+   <div class="msg ok">✔ Anda berhasil logout. Terima kasih & sampai jumpa kembali!</div>
+   <button class="btn" onclick="closeModal()">Tutup</button>`);
+}
+
+/* ---------- matikan sistem ---------- */
+function matikanDariLogin(){
+  modal(`<h3>🔒 Matikan Sistem</h3><p class="mut">Menu ini khusus Resepsionis. Verifikasi diperlukan.</p>
+   <label>Email Resepsionis</label><input type="email" id="mdEmail" onkeydown="if(event.key==='Enter')mdVerif()">
+   <div id="mdErr"></div>
+   <div style="margin-top:12px"><button class="btn" onclick="mdVerif()">Verifikasi</button> <button class="btn sec" onclick="closeModal()">Batal</button></div>`);
+}
+function mdVerif(){
+  const e = $('#mdEmail').value.trim();
+  if(!(e in resepsionisDb)){ $('#mdErr').innerHTML = msg('err','❌ Email tidak dikenali. Hanya Resepsionis yang dapat mematikan sistem.'); return; }
+  matikanSistem(true);
+}
+function gabungKamarStatus(fn){ return allRooms().filter(n=>fn(rooms[n].status)); }
+function matikanSistem(dariLogin){
+  const terisi = gabungKamarStatus(s=>TERISI.includes(s)), bl = gabungKamarStatus(s=>s==='BOOKING_BELUM_LUNAS'),
+        cl = gabungKamarStatus(s=>s.startsWith('CLEANING')), h = hitung();
+  modal(`<h3>MATIKAN SISTEM / TUTUP HOTEL</h3>
+   ${step(1,4,'Pemeriksaan sebelum menutup hotel')}${ringkasanHTML()}
+   <div style="margin-top:10px">${(!terisi.length&&!bl.length&&!cl.length)?msg('ok','✔ Semua kamar kosong dan tidak ada tagihan. Aman untuk ditutup.'):
+     (terisi.length?msg('warn',`⚠️ Masih ada ${terisi.length} kamar terisi: ${gabung(terisi)}`):'')+
+     (bl.length?msg('warn',`⚠️ Belum lunas: kamar ${gabung(bl)}`):'')+(cl.length?msg('warn',`⚠️ Masih proses cleaning: kamar ${gabung(cl)}`):'')}
+   ${msg('ok','✔ Data booking & tamu tersimpan otomatis dan TIDAK direset saat sistem dimatikan.')}</div>
+   ${step(2,4,'Laporan penutupan')}
+   <label class="chk"><input type="checkbox" id="mdLaporan" checked> 📝 Simpan laporan penutupan ke file .txt</label>
+   ${step(3,4,'Konfirmasi mematikan sistem')}
+   <div class="mut">Untuk mencegah salah tekan, ketik kata TUTUP (huruf besar/kecil bebas).</div>
+   <input type="text" id="mdTutup" placeholder="TUTUP"><div id="mdErr2"></div>
+   <div style="margin-top:14px"><button class="btn red" onclick="mdJalankan(${dariLogin})">🔌 Matikan Sistem</button> <button class="btn sec" onclick="closeModal()">Batal</button></div>`, true);
+}
+function buatLaporan(){
+  const h = hitung();
+  const isi = ['LAPORAN PENUTUPAN - HOTEL NAJAH HURRAHMAN','='.repeat(44),`Waktu penutupan : ${waktuSekarang()}`,
+    `Ditutup oleh    : ${S.user || 'Resepsionis (otorisasi login)'}`,'','RINGKASAN KAMAR',
+    `  Tersedia            : ${h.TERSEDIA}`,`  Booking Lunas       : ${h.BOOKING_LUNAS}`,`  Booking Belum Lunas : ${h.BOOKING_BELUM_LUNAS}`,
+    `  Cleaning            : ${h.CLEANING}`,`  Check-In Offline    : ${h.CHECK_IN_LANGSUNG}`,'','KAMAR YANG MASIH TERISI SAAT DITUTUP'];
+  const t = gabungKamarStatus(s=>TERISI.includes(s));
+  if(!t.length) isi.push('  (tidak ada)');
+  t.forEach(n=>{const k=rooms[n],x=k.tamu||{}; isi.push(`  ${n} | ${k.kasur} | ${x.nama||'-'} | ${x.order_id||'-'} | ${k.status}`);});
+  const ss = sesi || sesiTerakhir;
+  if(ss) isi.push('','AKTIVITAS SESI TERAKHIR',`  Booking dibuat    : ${ss.booking}`,`  Check-In langsung : ${ss.checkin}`,`  Kamar Check-Out   : ${ss.checkout}`,`  Pembatalan        : ${ss.batal}`);
+  return isi.join('\n')+'\n';
+}
+async function mdJalankan(dariLogin){
+  if($('#mdTutup').value.trim().toUpperCase()!=='TUTUP'){ $('#mdErr2').innerHTML = msg('err','⚠️ Kata tidak sesuai. Ketik TUTUP.'); return; }
+  const terisi = gabungKamarStatus(s=>TERISI.includes(s));
+  if(terisi.length && !confirm(`Masih ada ${terisi.length} kamar terisi. Tetap matikan sistem?`)) return;
+  const simpanLap = $('#mdLaporan').checked;
+  const log = [];
+  const draw = (run='') => modal(`<h3>PROSES MEMATIKAN SISTEM</h3>${step(4,4,'Menutup layanan hotel')}${log.map(l=>`<div class="li ok">${l}</div>`).join('')}${run?`<div class="li run"><span class="sp">⠋</span> ${run}...</div>`:''}`);
+  let namaFile = null;
+  const jalan = [['Menutup sesi pengguna',null],
+    simpanLap?['Menyimpan laporan penutupan',()=>{
+      namaFile = `laporan_penutupan_${new Date().getFullYear()}${pad(new Date().getMonth()+1)}${pad(new Date().getDate())}_${pad(new Date().getHours())}${pad(new Date().getMinutes())}${pad(new Date().getSeconds())}.txt`;
+      unduh(namaFile, buatLaporan());}]:null,
+    ['Menghentikan layanan booking dan check-in',null],['Mengunci denah dan status kamar',null],
+    ['Menyimpan data hotel (tidak direset)',()=>{ statusSistem.dimatikan = waktuSekarang(); statusSistem.laporan = namaFile; window.__ok = simpan(); }]].filter(Boolean);
+  for(const [t,fn] of jalan){ draw(t); await sleep(650); if(fn) fn(); log.push(t+'... selesai'); }
+  const operator = S.user || 'Resepsionis (otorisasi login)';
+  S.user=null; S.role=null; sesi=null;
+  modal(`<h3 style="color:var(--green)">SISTEM DIMATIKAN</h3>
+   ${struk('RINGKASAN',[['Waktu penutupan',waktuSekarang()],['Ditutup oleh',esc(operator)],
+     ...(simpanLap?[['Laporan',namaFile||'GAGAL disimpan']]:[]),['Data hotel',window.__ok?'tersimpan, tidak direset':'GAGAL disimpan']])}
+   <div class="msg ok">✔ Hotel resmi ditutup. Terima kasih atas kerja keras hari ini!</div>
+   <button class="btn" onclick="closeModal();go('standby')">Ke Mode Standby</button>`);
+  await sleep(4000);
+  if($('#modalRoot').querySelector('.modal') && S.view!=='standby'){ closeModal(); go('standby'); }
+}
+
+/* ---------- start ---------- */
+window.addEventListener('beforeunload', simpan);
+muat();
+render();
+</script>
+</body>
+</html>
